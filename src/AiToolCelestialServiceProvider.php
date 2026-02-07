@@ -3,7 +3,7 @@
 namespace OpenCompany\AiToolCelestial;
 
 use Illuminate\Support\ServiceProvider;
-use OpenCompany\AiToolCore\Support\ToolProviderRegistry;
+use OpenCompany\IntegrationCore\Support\ToolProviderRegistry;
 
 class AiToolCelestialServiceProvider extends ServiceProvider
 {

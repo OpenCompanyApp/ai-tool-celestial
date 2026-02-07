@@ -4,7 +4,7 @@ namespace OpenCompany\AiToolCelestial;
 
 use Laravel\Ai\Contracts\Tool;
 use OpenCompany\AiToolCelestial\Tools\QueryCelestial;
-use OpenCompany\AiToolCore\Contracts\ToolProvider;
+use OpenCompany\IntegrationCore\Contracts\ToolProvider;
 
 class CelestialToolProvider implements ToolProvider
 {
