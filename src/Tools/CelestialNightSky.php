@@ -1,0 +1,52 @@
+<?php
+
+namespace OpenCompany\AiToolCelestial\Tools;
+
+use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Laravel\Ai\Contracts\Tool;
+use Laravel\Ai\Tools\Request;
+use OpenCompany\AiToolCelestial\CelestialService;
+
+class CelestialNightSky implements Tool
+{
+    public function __construct(
+        private CelestialService $service,
+        private string $defaultTimezone = 'UTC',
+    ) {}
+
+    public function description(): string
+    {
+        return 'Get what\'s visible in the night sky right now: sun/moon/planet positions, darkness level, and stargazing quality for a location.';
+    }
+
+    public function handle(Request $request): string
+    {
+        $lat = isset($request['latitude']) ? (float) $request['latitude'] : 0;
+        $lon = isset($request['longitude']) ? (float) $request['longitude'] : 0;
+        $timezone = $request['timezone'] ?? $this->defaultTimezone;
+
+        try {
+            return $this->service->nightSky($lat, $lon, $timezone);
+        } catch (\Throwable $e) {
+            return "Celestial calculation error: {$e->getMessage()}";
+        }
+    }
+
+    /** @return array<string, mixed> */
+    public function schema(JsonSchema $schema): array
+    {
+        return [
+            'latitude' => $schema
+                ->number()
+                ->description('Observer latitude (-90 to 90).')
+                ->required(),
+            'longitude' => $schema
+                ->number()
+                ->description('Observer longitude (-180 to 180).')
+                ->required(),
+            'timezone' => $schema
+                ->string()
+                ->description("Timezone for display (e.g. 'Europe/Amsterdam'). Defaults to org timezone."),
+        ];
+    }
+}
